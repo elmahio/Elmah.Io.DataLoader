@@ -9,7 +9,6 @@ namespace Elmah.Io.DataLoader
     [Description("Load a configurable number of error messages into an elmah.io log")]
     public class Loader : ICommand
     {
-        // Kindly borrowed from https://github.com/atifaziz/StackTraceParser/blob/master/StackTraceParserTests.cs
         const string DotNetStackTrace = @"
 System.Web.HttpException (0x80004005): The controller for path '/api/test' was not found or does not implement IController.
    at System.Web.Mvc.DefaultControllerFactory.GetControllerInstance(RequestContext requestContext, Type controllerType)
