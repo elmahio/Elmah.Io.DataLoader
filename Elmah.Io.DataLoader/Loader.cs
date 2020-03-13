@@ -2,6 +2,7 @@
 using Elmah.Io.Client.Models;
 using GoCommando;
 using System;
+using Newtonsoft.Json.Serialization;
 
 namespace Elmah.Io.DataLoader
 {
@@ -36,9 +37,10 @@ System.Web.HttpException (0x80004005): The controller for path '/api/test' was n
             var yesterday = DateTime.UtcNow.AddDays(-1);
             for (var i = 0; i < 50; i++)
             {
+                var r = random.NextDouble();
                 api.Messages.Create(LogId, new CreateMessage
                 {
-                    Application = "Elmah.Io.DataLoader",
+                    //Application = "Elmah.Io.DataLoader",
                     Cookies = new[]
                     {
                        new Item("ASP.NET_SessionId", "lm5lbj35ehweehwha2ggsehh")
@@ -62,16 +64,59 @@ System.Web.HttpException (0x80004005): The controller for path '/api/test' was n
                         new Item("HTTP_USER_AGENT", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36")
                     },
                     Hostname = "Web01",
-                    Severity = "Error",
+                    Severity = Error(r),
                     Source = "Elmah.Io.DataLoader.exe",
-                    StatusCode = 404,
-                    Title = "The controller for path '/api/test' was not found or does not implement IController.",
-                    Type = "System.Web.HttpException",
-                    Url = "/api/test",
-                    User = "ThomasArdal",
-                    Version = "1.0.0",
+                    StatusCode = StatusCode(r),
+                    Title = Title(r),
+                    Type = Type(r),
+                    Url = Url(r),
+                    User = User(r),
+                    Version = "1.1.0",
                 });
             }
+        }
+
+        private string Url(double random)
+        {
+            if (random > 0.5) return "/api/process";
+            if (random > 0.2) return "/api/test";
+            return null;
+        }
+
+        private string Type(double random)
+        {
+            if (random > 0.5) return "System.NullReferenceException";
+            if (random > 0.2) return "System.Net.HttpException";
+            return null;
+        }
+
+        private string Title(double random)
+        {
+            if (random > 0.5) return "Object reference not set to an instance of an object.";
+            if (random > 0.2)
+                return "The controller for path '/api/test' was not found or does not implement IController.";
+            return "Processing request";
+        }
+
+        private int? StatusCode(double random)
+        {
+            if (random > 0.5) return 500;
+            if (random > 0.2) return 404;
+            return null;
+        }
+
+        private string Error(double random)
+        {
+            if (random > 0.5) return "Error";
+            if (random > 0.2) return "Warning";
+            return "Information";
+        }
+
+        private string User(double random)
+        {
+            if (random > 0.7) return "thomas@elmah.io";
+            if (random > 0.4) return "info@elmah.io";
+            return null;
         }
     }
 }
